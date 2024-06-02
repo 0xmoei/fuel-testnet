@@ -59,9 +59,11 @@ cd fuel-testnet/testnet-node
 
 <h1 align="center"> Run Node </h1>
 
-> Replace NAME , P2P_Secret , ETH_SEPOLIA_API
-
 ```console
+# Start Screen
+screen -S fuel
+
+# Replace NAME , P2P_Secret , ETH_SEPOLIA_API
 fuel-core run \
 --service-name NNAME \
 --keypair P2P_Secret \
