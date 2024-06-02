@@ -44,7 +44,7 @@ fuelup --version
 
 ```console
 fuel-core-keygen new --key-type peering
-# Make sure you save this somewhere safe so you don't need to generate a new key pair in the future
+# Make sure you save peerid and secret
 ```
 
 <h1 align="center"> Chain Config </h1>
