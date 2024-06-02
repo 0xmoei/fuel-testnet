@@ -44,7 +44,7 @@ fuelup --version
 
 ```console
 fuel-core-keygen new --key-type peering
-### Make sure you save this somewhere safe so you don't need to generate a new key pair in the future. ###
+# Make sure you save this somewhere safe so you don't need to generate a new key pair in the future
 ```
 
 <h1 align="center"> Chain Config </h1>
@@ -58,6 +58,7 @@ cd fuel-testnet/testnet-node
 ```
 
 <h1 align="center"> Run Node </h1>
+
 > Replace NAME , P2P_Secret , ETH_SEPOLIA_API
 
 ```console
