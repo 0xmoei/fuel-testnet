@@ -79,6 +79,12 @@ fuel-core run \
 --relayer-v2-listening-contracts 0x01855B78C1f8868DE70e84507ec735983bf262dA \
 --relayer-da-deploy-height 5827607 \
 --relayer-log-page-size 2000
+
+# Minimeze Node
+Screen + A + D
+
+# Return Node
+Screen -r fuel
 ```
 
 > Now wait until you fully download Logs for Blocks
