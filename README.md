@@ -1,5 +1,7 @@
 # Deploy SmartContract, Dapp & Full Node on Fuel Network Testnet
 
+## Deplo testnet Node
+
 <h1 align="center"> Dependecies </h1>
 
 ```console
