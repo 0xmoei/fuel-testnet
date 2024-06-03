@@ -227,8 +227,8 @@ import { CounterContractAbi__factory  } from "./sway-api"
 import type { CounterContractAbi } from "./sway-api";
  
 // REPLACE WITH YOUR CONTRACT ID
-const CONTRACT_ID = 0x6a99c924a15e3f9c35a759e4534f04560263b2cf512ad7998ab5194c487c3a4c
-  "0x...";
+const CONTRACT_ID =
+  "0x6a99c924a15e3f9c35a759e4534f04560263b2cf512ad7998ab5194c487c3a4c";
  
 export default function Home() {
   const [contract, setContract] = useState<CounterContractAbi>();
