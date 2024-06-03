@@ -109,9 +109,283 @@ Contract ID: 0x8342d413de2a678245d9ee39f020795800c7e6a4ac5ff7daae275f533dc05e08
 Deployed in block 0x4ea52b6652836c499e44b7e42f7c22d1ed1f03cf90a1d94cd0113b9023dfa636
 ```
 
+> Congrats, you have completed your first smart contract on Fuel ⛽
+> Tweet @fuel_network letting them to know you just built a dapp on Fuel, you might get invited to a private group of builders, be invited to the next Fuel dinner, get alpha on the project, or something 👀.
+
+
+# Deploy Dapp
+
+<h1 align="center"> Install Dependecies </h1>
+
+```console
+# Check Nodejs Version
+node --version
+
+# Delete old files
+sudo apt-get remove nodejs
+sudo apt-get purge nodejs
+sudo apt-get autoremove
+sudo rm /etc/apt/keyrings/nodesource.gpg
+sudo rm /etc/apt/sources.list.d/nodesource.list
+
+# Install Nodejs 18
+NODE_MAJOR=18
+sudo apt-get update
+sudo apt-get install -y ca-certificates curl gnupg
+sudo mkdir -p /etc/apt/keyrings
+
+curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
+
+echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_${NODE_MAJOR}.x nodistro main" | sudo tee /etc/apt/sources.list.d/nodesource.list
+
+sudo apt-get update
+sudo apt-get install -y nodejs
+node --version
+```
+
+<h1 align="center"> Create Dapp Frontend </h1>
+
+```console
+cd $HOME && cd fuel-project
+npx create-react-app frontend --template typescript
+# Success! Created frontend at Fuel/fuel-project/frontend
+
+# Install fuels sdk
+ls
+cd frontend
+npm install fuels @fuels/react @fuels/connectors @tanstack/react-query
+
+# Generate Contract type
+npx fuels init --contracts ../counter-contract/ --output ./src/sway-api
+npx fuels build
+
+# Building..
+Building Sway programs using source 'forc' binary
+Generating types..
+🎉  Build completed successfully!
+```
+
+<h1 align="center"> Modify Dapp Frontend </h1>
+
+```console
+# Edit index
+nano src/index.tsx
+
+# Delete everything and Paste this code
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import './index.css';
+import App from './App';
+import reportWebVitals from './reportWebVitals';
+import { FuelProvider } from '@fuels/react';
+import {
+  defaultConnectors,
+} from '@fuels/connectors';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+const queryClient = new QueryClient();
+
+const root = ReactDOM.createRoot(
+  document.getElementById('root') as HTMLElement
+);
+root.render(
+  <React.StrictMode>
+    <QueryClientProvider client={queryClient}>
+      <FuelProvider
+        fuelConfig={{
+          connectors: defaultConnectors(),
+        }}
+      >
+        <App />
+      </FuelProvider>
+    </QueryClientProvider>
+  </React.StrictMode>
+);
+
+// If you want to start measuring performance in your app, pass a function
+// to log results (for example: reportWebVitals(console.log))
+// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+reportWebVitals();
+```
+
+> Save ( Ctrl + X , Y , Enter )
+
+```console
+# Edit App
+nano src/App.tsx
+
+# Delete everything and Paste this code
+import { useEffect, useState } from "react";
+import {
+  useBalance,
+  useConnectUI,
+  useIsConnected,
+  useWallet
+} from '@fuels/react';
+import { CounterContractAbi__factory  } from "./sway-api"
+import type { CounterContractAbi } from "./sway-api";
+ 
+// REPLACE WITH YOUR CONTRACT ID
+const CONTRACT_ID = 
+  "0x...";
+ 
+export default function Home() {
+  const [contract, setContract] = useState<CounterContractAbi>();
+  const [counter, setCounter] = useState<number>();
+  const { connect, isConnecting } = useConnectUI();
+  const { isConnected } = useIsConnected();
+  const { wallet } = useWallet();
+  const { balance } = useBalance({
+    address: wallet?.address.toAddress(),
+    assetId: wallet?.provider.getBaseAssetId(),
+  });
+ 
+  useEffect(() => {
+    async function getInitialCount(){
+      if(isConnected && wallet){
+        const counterContract = CounterContractAbi__factory.connect(CONTRACT_ID, wallet);
+        await getCount(counterContract);
+        setContract(counterContract);
+      }
+    }
+    
+    getInitialCount();
+  }, [isConnected, wallet]);
+ 
+  const getCount = async (counterContract: CounterContractAbi) => {
+    try{
+      const { value } = await counterContract.functions
+      .count()
+      .get();
+      setCounter(value.toNumber());
+    } catch(error) {
+      console.error(error);
+    }
+  }
+ 
+  const onIncrementPressed = async () => {
+    if (!contract) {
+      return alert("Contract not loaded");
+    }
+    try {
+      await contract.functions
+      .increment()
+      .call();
+      await getCount(contract);
+    } catch(error) {
+      console.error(error);
+    }
+  };
+ 
+  return (
+    <div style={styles.root}>
+      <div style={styles.container}>
+        {isConnected ? (
+          <>
+            <h3 style={styles.label}>Counter</h3>
+            <div style={styles.counter}>
+              {counter ?? 0}
+            </div>
+ 
+            {balance && balance.toNumber() === 0 ? (
+              <p>Get testnet funds from the <a target="_blank" rel="noopener noreferrer"  href={`https://faucet-testnet.fuel.network/?address=${wallet?.address.toAddress()}`}>Fuel Faucet</a> to increment the counter.</p>
+          ) : 
+          (
+            <button
+            onClick={onIncrementPressed}
+            style={styles.button}
+            >
+              Increment Counter
+            </button>
+          )
+          }
+            
+          <p>Your Fuel Wallet address is:</p>
+          <p>{wallet?.address.toAddress()}</p>
+          </>
+        ) : (
+          <button
+          onClick={() => {
+            connect();
+          }}
+          style={styles.button}
+          >
+            {isConnecting ? 'Connecting' : 'Connect'}
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
+ 
+const styles = {
+  root: {
+    display: 'grid',
+    placeItems: 'center',
+    height: '100vh',
+    width: '100vw',
+    backgroundColor: "black",
+  } as React.CSSProperties,
+  container: {
+    color: "#ffffffec",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+  } as React.CSSProperties,
+  label: {
+    fontSize: "28px",
+  },
+  counter: {
+    color: "#a0a0a0",
+    fontSize: "48px",
+  },
+  button: {
+    borderRadius: "8px",
+    margin: "24px 0px",
+    backgroundColor: "#707070",
+    fontSize: "16px",
+    color: "#ffffffec",
+    border: "none",
+    outline: "none",
+    height: "60px",
+    padding: "0 1rem",
+    cursor: "pointer"
+  },
+}
+```
+
+<h1 align="center"> Run Dapp </h1>
+
+```console
+# Start Dapp
+npm start
+
+Compiled successfully!
+
+You can now view frontend in the browser.
+
+  Local:            http://localhost:3000
+  On Your Network:  http://192.168.4.48:3000
+
+Note that the development build is not optimized.
+To create a production build, use npm run build.
+```
+
+> Click the "Connect" button and select the wallet you have installed to connect your wallet.
+> 
+> Once connected, if there are no funds in your wallet, you will see a link to get testnet funds.
+>
+> If you have testnet ETH on Fuel, you should see the counter value and increment button:
+![quickstart-frontend](https://github.com/0xmoei/fuel-testnet/assets/90371338/50a7d737-42f8-44f9-b403-a9ff6a6ec416)
+
+> You just built a fullstack dapp on Fuel! ⛽
+>
+> Tweet @fuel_network letting them know you just built a dapp on Fuel, you might get invited to a private group of builders, be invited to the next Fuel dinner, get alpha on the project, or something 👀.
 
 
 ## Deploy testnet Node
+
+<h1 align="center"> Ignore this if you already installed Dependecies and Fuel before </h1>
 
 <h1 align="center"> Dependecies </h1>
 
@@ -146,11 +420,6 @@ fuelup default testnet
 # Check version
 fuelup --version
 ```
-
-> Congrats, you have completed your first smart contract on Fuel ⛽
-> Tweet @fuel_network letting them to know you just built a dapp on Fuel, you might get invited to a private group of builders, be invited to the next Fuel dinner, get alpha on the project, or something 👀.
-
-
 
 <h1 align="center"> Getting an Ethereum Sepolia API Key </h1>
 
