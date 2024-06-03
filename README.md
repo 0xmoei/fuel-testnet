@@ -1,6 +1,104 @@
-# Deploy SmartContract, Dapp & Full Node on Fuel Network Testnet
+# Deploy Contract, Dapp & Full Node on Fuel Network Testnet
 
-kk
+# Deploy Contract
+
+<h1 align="center"> Dependecies </h1>
+
+```console
+# Install Dependecies
+sudo apt-get update && apt-get upgrade -y
+sudo apt-get install git-all -y
+sudo apt-get install curl screen -y
+
+# Install Rust
+curl --proto '=https' --tlsv1.3 https://sh.rustup.rs -sSf | sh
+source "$HOME/.cargo/env"
+rustup install stable
+rustup update stable
+rustup default stable
+```
+
+<h1 align="center"> Install Fuel Toolchain </h1>
+
+```console
+# Install Fuel
+curl https://install.fuel.network | sh
+# Press y then Enter
+
+# Set Path
+source /root/.bashrc
+
+# Set fuelup testnet
+fuelup toolchain install latest
+fuelup self update
+fuelup update
+fuelup default latest
+
+# Check version
+fuelup --version
+```
+
+<h1 align="center"> Create project </h1>
+
+```console
+# Create project
+mkdir fuel-project
+cd fuel-project
+forc new counter-contract
+
+# Edit Contract
+nano counter-contract/src/main.sw
+
+# Paste this code
+contract;
+ 
+storage {
+    counter: u64 = 0,
+}
+ 
+abi Counter {
+    #[storage(read, write)]
+    fn increment();
+ 
+    #[storage(read)]
+    fn count() -> u64;
+}
+ 
+impl Counter for Contract {
+    #[storage(read)]
+    fn count() -> u64 {
+        storage.counter.read()
+    }
+ 
+    #[storage(read, write)]
+    fn increment() {
+        let incremented = storage.counter.read() + 1;
+        storage.counter.write(incremented);
+    }
+}
+
+# Build Contract
+cd counter-contract
+forc build
+```
+
+<h1 align="center"> Deploy Contract </h1>
+
+> First, Download [Fuel-Wallet](https://wallet.fuel.network/docs/install/)
+> Create new wallet and get [Faucet](https://faucet-testnet.fuel.network/)
+
+```console
+# Import seed phrase and create password
+forc wallet import
+
+# Create account
+forc wallet account new
+
+# Check your address
+forc wallet accounts
+```
+
+
 
 ## Deploy testnet Node
 
@@ -36,7 +134,22 @@ fuelup default testnet
 
 # Check version
 fuelup --version
+
+# Deploy Contract
+forc deploy --testnet
+
+# You get a Contract ID in your Terminal like this, Save it!
+Contract counter-contract Deployed!
+
+Network: https://testnet.fuel.network
+Contract ID: 0x8342d413de2a678245d9ee39f020795800c7e6a4ac5ff7daae275f533dc05e08
+Deployed in block 0x4ea52b6652836c499e44b7e42f7c22d1ed1f03cf90a1d94cd0113b9023dfa636
 ```
+
+> Congrats, you have completed your first smart contract on Fuel ⛽
+> Tweet @fuel_network letting them to know you just built a dapp on Fuel, you might get invited to a private group of builders, be invited to the next Fuel dinner, get alpha on the project, or something 👀.
+
+
 
 <h1 align="center"> Getting an Ethereum Sepolia API Key </h1>
 
