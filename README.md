@@ -85,6 +85,7 @@ forc build
 <h1 align="center"> Deploy Contract </h1>
 
 > First, Download [Fuel-Wallet](https://wallet.fuel.network/docs/install/)
+> 
 > Create new wallet and get [Faucet](https://faucet-testnet.fuel.network/)
 
 ```console
