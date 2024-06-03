@@ -1,4 +1,4 @@
-# Fuel-testnet
+# Deploy SmartContract, Dapp & Full Node on Fuel Network Testnet
 
 <h1 align="center"> Dependecies </h1>
 
