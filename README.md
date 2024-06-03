@@ -445,10 +445,8 @@ fuel-core-keygen new --key-type peering
 
 ```console
 # Clone the repository
+cd
 git clone https://github.com/0xmoei/fuel-testnet
-
-# Go to testnet directory
-cd fuel-testnet/testnet-node
 ```
 
 <h1 align="center"> Run Node </h1>
