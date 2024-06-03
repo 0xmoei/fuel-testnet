@@ -370,6 +370,10 @@ You can now view frontend in the browser.
 
 Note that the development build is not optimized.
 To create a production build, use npm run build.
+
+# It can be 3001 for you in your browser, you have to check
+# Open port (Don't touch this terminal and create a new terminal)
+ufw allow 3000/tcp
 ```
 
 > Click the "Connect" button and select the wallet you have installed to connect your wallet.
