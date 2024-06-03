@@ -392,6 +392,8 @@ ufw allow 3000/tcp
 
 ## Deploy testnet Node
 
+> Node is not recommended to run by the team
+
 <h1 align="center"> Ignore this if you already installed Dependecies and Fuel before </h1>
 
 <h1 align="center"> Dependecies </h1>
