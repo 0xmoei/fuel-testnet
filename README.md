@@ -35,6 +35,7 @@ fuelup toolchain install latest
 fuelup self update
 fuelup update
 fuelup default latest
+fuelup default testnet
 
 # Check version
 fuelup --version
