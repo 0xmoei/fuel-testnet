@@ -98,7 +98,7 @@ forc wallet account new
 # Check your address
 forc wallet accounts
 
-# Deploy Contract
+# Deploy Contract , Enter password , Enter 0 , Enter y
 forc deploy --testnet
 
 # You get a Contract ID in your Terminal like this, Save it!
