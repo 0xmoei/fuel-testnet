@@ -49,7 +49,7 @@ forc new counter-contract
 # Edit Contract
 nano counter-contract/src/main.sw
 
-# Paste this code
+# Delete everything and Paste this code
 contract;
  
 storage {
