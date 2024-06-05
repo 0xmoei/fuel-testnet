@@ -166,6 +166,12 @@ npx fuels build
 Building Sway programs using source 'forc' binary
 Generating types..
 🎉  Build completed successfully!
+
+# If you get Config file not found again do this:
+npx fuels init --contracts ../counter-contract/ --output ./src/sway-api
+
+# Then
+npx fuels build
 ```
 
 <h1 align="center"> Modify Dapp Frontend </h1>
